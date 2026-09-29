@@ -32,7 +32,7 @@ export function SiteFooter() {
           <h3 className="mb-3 text-sm font-semibold">Account</h3>
           <ul className="space-y-2 text-sm text-foreground-secondary">
             <li><Link to="/auth" className="hover:text-foreground">Sign in</Link></li>
-            <li><Link to="/auth" search={{ mode: "signup" }} className="hover:text-foreground">Create account</Link></li>
+            <li><Link to="/auth" className="hover:text-foreground">Create account</Link></li>
           </ul>
         </div>
       </div>
