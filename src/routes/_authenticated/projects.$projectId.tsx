@@ -74,7 +74,7 @@ function Builder() {
     const html = (snapshot as Record<string, string>)["index.html"];
     if (!html) return;
     const { error } = await supabase.from("project_files").upsert({ project_id: projectId, path: "index.html", content: html, language: "html", size: html.length }, { onConflict: "project_id,path" });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`Restored version ${version}`);
     refresh();
   }

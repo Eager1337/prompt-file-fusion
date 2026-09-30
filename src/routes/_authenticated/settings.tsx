@@ -29,7 +29,7 @@ function Settings() {
 
   async function save() {
     const { error } = await supabase.from("workspaces").update({ name }).eq("id", ws.data!.workspace.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Saved");
     qc.invalidateQueries({ queryKey: ["workspace"] });
   }
