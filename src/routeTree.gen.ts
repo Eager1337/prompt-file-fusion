@@ -10,33 +10,160 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AgenticAppBuilderRouteImport } from './routes/agentic-app-builder'
+import { Route as AiAppBuilderRouteImport } from './routes/ai-app-builder'
+import { Route as AiWebsiteBuilderRouteImport } from './routes/ai-website-builder'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as StartRouteImport } from './routes/start'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgenticAppBuilderRoute = AgenticAppBuilderRouteImport.update({
+  id: '/agentic-app-builder',
+  path: '/agentic-app-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiAppBuilderRoute = AiAppBuilderRouteImport.update({
+  id: '/ai-app-builder',
+  path: '/ai-app-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiWebsiteBuilderRoute = AiWebsiteBuilderRouteImport.update({
+  id: '/ai-website-builder',
+  path: '/ai-website-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProjectsProjectIdRoute =
+  AuthenticatedProjectsProjectIdRouteImport.update({
+    id: '/projects/$projectId',
+    path: '/projects/$projectId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agentic-app-builder': typeof AgenticAppBuilderRoute
+  '/ai-app-builder': typeof AiAppBuilderRoute
+  '/ai-website-builder': typeof AiWebsiteBuilderRoute
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
+  '/start': typeof StartRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agentic-app-builder': typeof AgenticAppBuilderRoute
+  '/ai-app-builder': typeof AiAppBuilderRoute
+  '/ai-website-builder': typeof AiWebsiteBuilderRoute
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
+  '/start': typeof StartRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/agentic-app-builder': typeof AgenticAppBuilderRoute
+  '/ai-app-builder': typeof AiAppBuilderRoute
+  '/ai-website-builder': typeof AiWebsiteBuilderRoute
+  '/auth': typeof AuthRoute
+  '/pricing': typeof PricingRoute
+  '/start': typeof StartRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/agentic-app-builder'
+    | '/ai-app-builder'
+    | '/ai-website-builder'
+    | '/auth'
+    | '/pricing'
+    | '/start'
+    | '/dashboard'
+    | '/settings'
+    | '/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/agentic-app-builder'
+    | '/ai-app-builder'
+    | '/ai-website-builder'
+    | '/auth'
+    | '/pricing'
+    | '/start'
+    | '/dashboard'
+    | '/settings'
+    | '/projects/$projectId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/agentic-app-builder'
+    | '/ai-app-builder'
+    | '/ai-website-builder'
+    | '/auth'
+    | '/pricing'
+    | '/start'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/settings'
+    | '/_authenticated/projects/$projectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AgenticAppBuilderRoute: typeof AgenticAppBuilderRoute
+  AiAppBuilderRoute: typeof AiAppBuilderRoute
+  AiWebsiteBuilderRoute: typeof AiWebsiteBuilderRoute
+  AuthRoute: typeof AuthRoute
+  PricingRoute: typeof PricingRoute
+  StartRoute: typeof StartRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +175,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agentic-app-builder': {
+      id: '/agentic-app-builder'
+      path: '/agentic-app-builder'
+      fullPath: '/agentic-app-builder'
+      preLoaderRoute: typeof AgenticAppBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-app-builder': {
+      id: '/ai-app-builder'
+      path: '/ai-app-builder'
+      fullPath: '/ai-app-builder'
+      preLoaderRoute: typeof AiAppBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-website-builder': {
+      id: '/ai-website-builder'
+      path: '/ai-website-builder'
+      fullPath: '/ai-website-builder'
+      preLoaderRoute: typeof AiWebsiteBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/projects/$projectId': {
+      id: '/_authenticated/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AgenticAppBuilderRoute: AgenticAppBuilderRoute,
+  AiAppBuilderRoute: AiAppBuilderRoute,
+  AiWebsiteBuilderRoute: AiWebsiteBuilderRoute,
+  AuthRoute: AuthRoute,
+  PricingRoute: PricingRoute,
+  StartRoute: StartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
