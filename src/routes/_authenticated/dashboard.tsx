@@ -43,7 +43,7 @@ function Dashboard() {
       .select("id")
       .single();
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     navigate({ to: "/projects/$projectId", params: { projectId: data.id }, search: prompt ? { prompt } : {} });
   }
 
