@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowUp, History, Loader2, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowUp, History, Loader2, Rocket, RotateCcw } from "lucide-react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,9 +71,9 @@ function Builder() {
   }, [initialPrompt, messages.data]);
 
   async function restore(snapshot: unknown, version: number) {
-    const html = (snapshot as Record<string, string>)["index.html"];
-    if (!html) return;
-    const { error } = await supabase.from("project_files").upsert({ project_id: projectId, path: "index.html", content: html, language: "html", size: html.length }, { onConflict: "project_id,path" });
+    const files = Object.entries(snapshot as Record<string, string>);
+    if (!files.length) return;
+    const { error } = await supabase.from("project_files").upsert(files.map(([path, content]) => ({ project_id: projectId, path, content, size: content.length })), { onConflict: "project_id,path" });
     if (error) { toast.error(error.message); return; }
     toast.success(`Restored version ${version}`);
     refresh();
@@ -86,7 +86,10 @@ function Builder() {
           <Button asChild variant="ghost" size="icon"><Link to="/dashboard" aria-label="Back to projects"><ArrowLeft /></Link></Button>
           <span className="font-medium">{project.data?.name ?? "…"}</span>
         </div>
-        <Button variant="outline" size="sm" onClick={() => setShowHistory((v) => !v)}><History /> Versions</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowHistory((v) => !v)}><History /> Versions</Button>
+          <Button asChild variant="ink" size="sm"><Link to="/deploy/$projectId" params={{ projectId }}><Rocket /> Deploy</Link></Button>
+        </div>
       </header>
       <div className="flex min-h-0 flex-1">
         <aside className="flex w-full max-w-sm flex-col border-r border-border bg-background">
