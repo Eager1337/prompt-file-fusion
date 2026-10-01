@@ -19,7 +19,9 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedDeployProjectIdRouteImport } from './routes/_authenticated/deploy.$projectId'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
+import { Route as ApiPublicAppsDeploymentIdRouteImport } from './routes/api/public/apps.$deploymentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,11 +72,23 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDeployProjectIdRoute =
+  AuthenticatedDeployProjectIdRouteImport.update({
+    id: '/deploy/$projectId',
+    path: '/deploy/$projectId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdRouteImport.update({
     id: '/projects/$projectId',
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiPublicAppsDeploymentIdRoute =
+  ApiPublicAppsDeploymentIdRouteImport.update({
+    id: '/api/public/apps/$deploymentId',
+    path: '/api/public/apps/$deploymentId',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -87,7 +101,9 @@ export interface FileRoutesByFullPath {
   '/start': typeof StartRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/deploy/$projectId': typeof AuthenticatedDeployProjectIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/api/public/apps/$deploymentId': typeof ApiPublicAppsDeploymentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,7 +115,9 @@ export interface FileRoutesByTo {
   '/start': typeof StartRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/deploy/$projectId': typeof AuthenticatedDeployProjectIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/api/public/apps/$deploymentId': typeof ApiPublicAppsDeploymentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,7 +131,9 @@ export interface FileRoutesById {
   '/start': typeof StartRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/deploy/$projectId': typeof AuthenticatedDeployProjectIdRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/api/public/apps/$deploymentId': typeof ApiPublicAppsDeploymentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,7 +147,9 @@ export interface FileRouteTypes {
     | '/start'
     | '/dashboard'
     | '/settings'
+    | '/deploy/$projectId'
     | '/projects/$projectId'
+    | '/api/public/apps/$deploymentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,7 +161,9 @@ export interface FileRouteTypes {
     | '/start'
     | '/dashboard'
     | '/settings'
+    | '/deploy/$projectId'
     | '/projects/$projectId'
+    | '/api/public/apps/$deploymentId'
   id:
     | '__root__'
     | '/'
@@ -152,7 +176,9 @@ export interface FileRouteTypes {
     | '/start'
     | '/_authenticated/dashboard'
     | '/_authenticated/settings'
+    | '/_authenticated/deploy/$projectId'
     | '/_authenticated/projects/$projectId'
+    | '/api/public/apps/$deploymentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -164,6 +190,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PricingRoute: typeof PricingRoute
   StartRoute: typeof StartRoute
+  ApiPublicAppsDeploymentIdRoute: typeof ApiPublicAppsDeploymentIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -238,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/deploy/$projectId': {
+      id: '/_authenticated/deploy/$projectId'
+      path: '/deploy/$projectId'
+      fullPath: '/deploy/$projectId'
+      preLoaderRoute: typeof AuthenticatedDeployProjectIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/projects/$projectId': {
       id: '/_authenticated/projects/$projectId'
       path: '/projects/$projectId'
@@ -245,18 +279,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/apps/$deploymentId': {
+      id: '/api/public/apps/$deploymentId'
+      path: '/api/public/apps/$deploymentId'
+      fullPath: '/api/public/apps/$deploymentId'
+      preLoaderRoute: typeof ApiPublicAppsDeploymentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedDeployProjectIdRoute: typeof AuthenticatedDeployProjectIdRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedDeployProjectIdRoute: AuthenticatedDeployProjectIdRoute,
   AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
 }
 
@@ -272,6 +315,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PricingRoute: PricingRoute,
   StartRoute: StartRoute,
+  ApiPublicAppsDeploymentIdRoute: ApiPublicAppsDeploymentIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

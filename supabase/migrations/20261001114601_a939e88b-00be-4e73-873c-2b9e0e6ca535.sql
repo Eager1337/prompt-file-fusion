@@ -1,0 +1,1 @@
+ALTER TABLE public.deployments ADD COLUMN IF NOT EXISTS html text, ADD COLUMN IF NOT EXISTS version integer, ADD COLUMN IF NOT EXISTS settings jsonb NOT NULL DEFAULT '{}'::jsonb;
