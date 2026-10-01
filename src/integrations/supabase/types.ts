@@ -225,28 +225,37 @@ export type Database = {
           created_at: string
           created_by: string | null
           environment: string
+          html: string | null
           id: string
           project_id: string
+          settings: Json
           status: string
           url: string | null
+          version: number | null
         }
         Insert: {
           created_at?: string
           created_by?: string | null
           environment?: string
+          html?: string | null
           id?: string
           project_id: string
+          settings?: Json
           status?: string
           url?: string | null
+          version?: number | null
         }
         Update: {
           created_at?: string
           created_by?: string | null
           environment?: string
+          html?: string | null
           id?: string
           project_id?: string
+          settings?: Json
           status?: string
           url?: string | null
+          version?: number | null
         }
         Relationships: [
           {
