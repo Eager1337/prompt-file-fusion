@@ -70,10 +70,10 @@ export function parseFiles(text: string) {
   const marks = [...text.matchAll(re)];
   marks.forEach((m, idx) => {
     const start = (m.index ?? 0) + m[0].length;
-    const end = idx + 1 < marks.length ? marks[idx + 1].index! : text.length;
+    const end = marks[idx + 1]?.index ?? text.length;
     let content = text.slice(start, end).replace(/^\s*\n/, "").trimEnd();
     content = content.replace(/^```[a-z]*\n/i, "").replace(/\n```$/, "");
-    const path = m[1].trim().replace(/^\/+/, "");
+    const path = (m[1] ?? "").trim().replace(/^\/+/, "");
     if (path && !path.includes("..")) files.push({ path, content });
   });
   return files;
