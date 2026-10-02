@@ -19,12 +19,19 @@ export function renderErrorPage(): string {
   <body>
     <div class="card">
       <h1>This page didn't load</h1>
-      <p>Something went wrong on our end. You can try refreshing or head back home.</p>
+      <p>Something went wrong on our end. We'll retry automatically in a moment.</p>
       <div class="actions">
         <button class="primary" onclick="location.reload()">Try again</button>
         <a class="secondary" href="/">Go home</a>
       </div>
     </div>
+    <script>
+      (function () {
+        var n = Number(sessionStorage.getItem("oneager_err_retries") || 0);
+        if (n < 3) { sessionStorage.setItem("oneager_err_retries", String(n + 1)); setTimeout(function () { location.reload(); }, 2500); }
+        else { setTimeout(function () { sessionStorage.removeItem("oneager_err_retries"); }, 30000); }
+      })();
+    </script>
   </body>
 </html>`;
 }

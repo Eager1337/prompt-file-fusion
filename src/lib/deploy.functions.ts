@@ -65,5 +65,6 @@ export const publishProject = createServerFn({ method: "POST" })
     const url = `${data.origin.replace(/\/$/, "")}/api/public/apps/${dep.id}`;
     await supabase.from("deployments").update({ url }).eq("id", dep.id);
     if (data.environment === "production") await supabase.from("projects").update({ status: "DEPLOYED" }).eq("id", data.projectId);
-    return { url };
+    const siteUrl = `${data.origin.replace(/\/$/, "")}/api/public/sites/${data.projectId}`;
+    return { url: data.environment === "production" ? siteUrl : url };
   });
