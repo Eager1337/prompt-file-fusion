@@ -21,7 +21,9 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedDeployProjectIdRouteImport } from './routes/_authenticated/deploy.$projectId'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects.$projectId'
+import { Route as ApiPublicGenerateRouteImport } from './routes/api/public/generate'
 import { Route as ApiPublicAppsDeploymentIdRouteImport } from './routes/api/public/apps.$deploymentId'
+import { Route as ApiPublicSitesProjectIdRouteImport } from './routes/api/public/sites.$projectId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,12 +86,22 @@ const AuthenticatedProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicGenerateRoute = ApiPublicGenerateRouteImport.update({
+  id: '/api/public/generate',
+  path: '/api/public/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAppsDeploymentIdRoute =
   ApiPublicAppsDeploymentIdRouteImport.update({
     id: '/api/public/apps/$deploymentId',
     path: '/api/public/apps/$deploymentId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicSitesProjectIdRoute = ApiPublicSitesProjectIdRouteImport.update({
+  id: '/api/public/sites/$projectId',
+  path: '/api/public/sites/$projectId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -103,7 +115,9 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/deploy/$projectId': typeof AuthenticatedDeployProjectIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/api/public/generate': typeof ApiPublicGenerateRoute
   '/api/public/apps/$deploymentId': typeof ApiPublicAppsDeploymentIdRoute
+  '/api/public/sites/$projectId': typeof ApiPublicSitesProjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,7 +131,9 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/deploy/$projectId': typeof AuthenticatedDeployProjectIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/api/public/generate': typeof ApiPublicGenerateRoute
   '/api/public/apps/$deploymentId': typeof ApiPublicAppsDeploymentIdRoute
+  '/api/public/sites/$projectId': typeof ApiPublicSitesProjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,7 +149,9 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/deploy/$projectId': typeof AuthenticatedDeployProjectIdRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/api/public/generate': typeof ApiPublicGenerateRoute
   '/api/public/apps/$deploymentId': typeof ApiPublicAppsDeploymentIdRoute
+  '/api/public/sites/$projectId': typeof ApiPublicSitesProjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -149,7 +167,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/deploy/$projectId'
     | '/projects/$projectId'
+    | '/api/public/generate'
     | '/api/public/apps/$deploymentId'
+    | '/api/public/sites/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -163,7 +183,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/deploy/$projectId'
     | '/projects/$projectId'
+    | '/api/public/generate'
     | '/api/public/apps/$deploymentId'
+    | '/api/public/sites/$projectId'
   id:
     | '__root__'
     | '/'
@@ -178,7 +200,9 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/deploy/$projectId'
     | '/_authenticated/projects/$projectId'
+    | '/api/public/generate'
     | '/api/public/apps/$deploymentId'
+    | '/api/public/sites/$projectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -190,7 +214,9 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PricingRoute: typeof PricingRoute
   StartRoute: typeof StartRoute
+  ApiPublicGenerateRoute: typeof ApiPublicGenerateRoute
   ApiPublicAppsDeploymentIdRoute: typeof ApiPublicAppsDeploymentIdRoute
+  ApiPublicSitesProjectIdRoute: typeof ApiPublicSitesProjectIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -279,11 +305,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/generate': {
+      id: '/api/public/generate'
+      path: '/api/public/generate'
+      fullPath: '/api/public/generate'
+      preLoaderRoute: typeof ApiPublicGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/apps/$deploymentId': {
       id: '/api/public/apps/$deploymentId'
       path: '/api/public/apps/$deploymentId'
       fullPath: '/api/public/apps/$deploymentId'
       preLoaderRoute: typeof ApiPublicAppsDeploymentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/sites/$projectId': {
+      id: '/api/public/sites/$projectId'
+      path: '/api/public/sites/$projectId'
+      fullPath: '/api/public/sites/$projectId'
+      preLoaderRoute: typeof ApiPublicSitesProjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -315,7 +355,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PricingRoute: PricingRoute,
   StartRoute: StartRoute,
+  ApiPublicGenerateRoute: ApiPublicGenerateRoute,
   ApiPublicAppsDeploymentIdRoute: ApiPublicAppsDeploymentIdRoute,
+  ApiPublicSitesProjectIdRoute: ApiPublicSitesProjectIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -51,6 +51,10 @@ export default {
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
+      if (request.signal?.aborted || (error instanceof Error && /aborted/i.test(error.message))) {
+        // Client went away (e.g. preview restart / navigation) — not a server failure.
+        return new Response(null, { status: 499 });
+      }
       console.error(error);
       return new Response(renderErrorPage(), {
         status: 500,
