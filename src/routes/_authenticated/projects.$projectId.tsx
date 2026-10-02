@@ -1,13 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ArrowLeft, ArrowUp, History, Loader2, Rocket, RotateCcw } from "lucide-react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { generateApp } from "@/lib/generate.functions";
+import { parseFiles } from "@/lib/files";
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId")({
   validateSearch: z.object({ prompt: z.string().optional() }),
@@ -19,7 +18,8 @@ function Builder() {
   const { projectId } = Route.useParams();
   const { prompt: initialPrompt } = Route.useSearch();
   const qc = useQueryClient();
-  const generate = useServerFn(generateApp);
+  const [live, setLive] = useState("");
+  const [liveHtml, setLiveHtml] = useState("");
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -51,14 +51,48 @@ function Builder() {
     if (!p || busy) return;
     setBusy(true);
     setInput("");
+    setLive("");
+    setLiveHtml("");
     try {
-      await generate({ data: { projectId, prompt: p } });
-      refresh();
+      const { data: sess } = await supabase.auth.getSession();
+      const res = await fetch("/api/public/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${sess.session?.access_token ?? ""}` },
+        body: JSON.stringify({ projectId, prompt: p }),
+      });
+      if (!res.ok || !res.body) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(j.error ?? `Generation failed (${res.status})`);
+      }
+      qc.invalidateQueries({ queryKey: ["messages", projectId] });
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let acc = "";
+      let lastPaint = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        acc += dec.decode(value, { stream: true });
+        const body = acc.split("\u0000")[0] ?? "";
+        setLive(body);
+        const now = Date.now();
+        if (now - lastPaint > 700) {
+          lastPaint = now;
+          const idx = parseFiles(body).find((f) => f.path === "index.html");
+          if (idx) setLiveHtml(idx.content);
+        }
+      }
+      const tail = acc.split("\u0000")[1] ?? "";
+      if (tail.startsWith("ERROR")) throw new Error((JSON.parse(tail.slice(5)) as { error: string }).error);
+      if (!tail.startsWith("DONE")) throw new Error("The connection was interrupted. Please try again.");
+      toast.success("App built");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Something went wrong");
-      refresh();
     } finally {
+      refresh();
       setBusy(false);
+      setLive("");
+      setLiveHtml("");
     }
   }
 
@@ -115,8 +149,17 @@ function Builder() {
           </form>
         </aside>
         <section className="relative min-w-0 flex-1 p-3">
-          {file.data?.content ? (
-            <iframe title="Live preview" srcDoc={file.data.content} sandbox="allow-scripts allow-forms allow-modals" className="h-full w-full rounded-xl border border-border bg-background" />
+          {busy && live && (
+            <div className="absolute bottom-6 left-6 z-10 flex flex-wrap gap-1 rounded-xl border border-border bg-background/95 p-2 text-xs shadow-soft">
+              {parseFiles(live).map((f) => (
+                <span key={f.path} className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 font-mono">
+                  {!f.complete && <Loader2 className="h-3 w-3 animate-spin" />}{f.path} · {f.content.length}b
+                </span>
+              ))}
+            </div>
+          )}
+          {(busy && liveHtml) || file.data?.content ? (
+            <iframe title="Live preview" srcDoc={busy && liveHtml ? liveHtml : file.data?.content ?? ""} sandbox="allow-scripts allow-forms allow-modals" className="h-full w-full rounded-xl border border-border bg-background" />
           ) : (
             <div className="grid h-full place-items-center rounded-xl border border-dashed border-border text-sm text-foreground-secondary">
               {busy ? "Your app is being built…" : "Your live preview will appear here."}

@@ -145,6 +145,14 @@ function Deploy() {
               <Button variant="ink" onClick={doPublish} disabled={!!busy || latest?.status !== "SUCCESS"}><Rocket /> {busy === "publish" ? "Publishing…" : "Publish"}</Button>
             </div>
           </div>
+          {deployments.data?.some((d) => d.environment === "production") && (
+            <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl bg-success/10 p-3 text-sm">
+              <span className="font-medium">Live app:</span>
+              <a href={`/api/public/sites/${projectId}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 break-all text-primary hover:underline">
+                {typeof window !== "undefined" ? window.location.origin : ""}/api/public/sites/{projectId} <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          )}
           {latest?.status !== "SUCCESS" && <p className="mt-2 text-xs text-foreground-secondary">A successful build is required before publishing.</p>}
           <ul className="mt-4 divide-y divide-border text-sm">
             {deployments.data?.length ? deployments.data.map((d) => (

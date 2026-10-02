@@ -119,6 +119,19 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useEffect(() => {
+    // When the server restarts mid-session, lazily loaded page code can fail to load.
+    // Reload once instead of leaving a blank screen.
+    const onPreloadError = (e: Event) => {
+      e.preventDefault();
+      if (sessionStorage.getItem("oneager_reloaded")) return;
+      sessionStorage.setItem("oneager_reloaded", "1");
+      window.location.reload();
+    };
+    const clear = window.setTimeout(() => sessionStorage.removeItem("oneager_reloaded"), 10000);
+    window.addEventListener("vite:preloadError", onPreloadError);
+    return () => { window.removeEventListener("vite:preloadError", onPreloadError); window.clearTimeout(clear); };
+  }, []);
+  useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
